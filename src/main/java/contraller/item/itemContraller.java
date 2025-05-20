@@ -44,7 +44,26 @@ boolean b;
 
     @Override
     public boolean updateItem(item itm) {
-        return false;
+        String Sql="UPDATE items set ItemName=?,Category=?,Price=?,Quantity=?,Supplier=?,WarehouseLocation=?,AddedDate=? WHERE ItemID=?";
+        try {
+            Connection connection = dbconnection.getInstance().getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(Sql);
+
+            preparedStatement.setObject(1,itm.getName());
+            preparedStatement.setObject(2,itm.getCategory());
+            preparedStatement.setObject(3,itm.getPrice());
+            preparedStatement.setObject(4,itm.getQuantity());
+            preparedStatement.setObject(5,itm.getSuplier());
+            preparedStatement.setObject(6,itm.getLocation());
+            preparedStatement.setObject(7,itm.getDate());
+            preparedStatement.setObject(8,itm.getId());
+           return preparedStatement.executeUpdate()>0;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
     @Override

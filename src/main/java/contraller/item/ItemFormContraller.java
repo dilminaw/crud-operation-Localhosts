@@ -84,6 +84,7 @@ public class ItemFormContraller  implements Initializable {
      if (service.addItem(itm)){
 
             new Alert(Alert.AlertType.CONFIRMATION,"added");
+            dataReaload();
      }
 dataReaload();
     }
@@ -101,8 +102,15 @@ dataReaload();
     @FXML
     void btnUpdateItemOnAction(ActionEvent event) {
 
-    }
+        item itm = new item(txtID.getText(), txtName.getText(), txtCategory.getValue(), Double.parseDouble(txtPrice.getText()), Integer.parseInt(txtQuentity.getText()), txtSuplier.getText(), txtLocation.getText(), txtDate.getValue());
+        if (service.updateItem(itm)) {
 
+            new Alert(Alert.AlertType.CONFIRMATION, "Updated");
+            dataReaload();
+
+
+        }
+    }
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -135,7 +143,7 @@ dataReaload();
       txtID.setText(itm.getId());
       txtName.setText(itm.getName());
       txtCategory.setValue(itm.getCategory());
-      txtPrice.setText(""+itm.getClass());
+      txtPrice.setText(""+itm.getPrice());
       txtQuentity.setText(""+itm.getQuantity());
       txtLocation.setText(itm.getLocation());
       txtDate.setValue(itm.getDate());
