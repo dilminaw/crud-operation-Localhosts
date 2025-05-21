@@ -39,6 +39,16 @@ boolean b;
 
     @Override
     public boolean deleteItem(String id) {
+        try {
+            Connection connection = dbconnection.getInstance().getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM items WHERE ItemID='"+id+"'");
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
         return false;
     }
 

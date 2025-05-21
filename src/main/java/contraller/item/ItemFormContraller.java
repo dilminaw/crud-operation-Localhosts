@@ -92,6 +92,8 @@ dataReaload();
     @FXML
     void btnDeleteItemOnAction(ActionEvent event) {
 
+        service.deleteItem(txtID.getText());
+
     }
 
     @FXML
@@ -187,4 +189,7 @@ itemTable.setItems(observableList);
 
     }
 
+    public void BtnReloadOnAction(ActionEvent actionEvent) {
+        dataReaload();
+    }
 }

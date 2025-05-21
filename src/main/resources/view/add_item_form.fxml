@@ -86,5 +86,6 @@
       <Button layoutX="507.0" layoutY="153.0" mnemonicParsing="false" onAction="#btnSearchItemOnAction" text="SEARCH" />
       <Button layoutX="507.0" layoutY="110.0" mnemonicParsing="false" onAction="#btnDeleteItemOnAction" text="DELETE" />
       <Button layoutX="507.0" layoutY="70.0" mnemonicParsing="false" onAction="#btnUpdateItemOnAction" text="UPDATE" />
+      <Button layoutX="355.0" layoutY="179.0" mnemonicParsing="false" onAction="#BtnReloadOnAction" text="RELOAD" />
    </children>
 </AnchorPane>
