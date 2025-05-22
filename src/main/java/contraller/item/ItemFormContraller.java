@@ -98,6 +98,17 @@ dataReaload();
 
     @FXML
     void btnSearchItemOnAction(ActionEvent event) {
+       item itm = service.searchCoustomer(txtID.getText());
+           txtName.setText(itm.getName());
+           txtCategory.setValue(itm.getCategory());
+           txtPrice.setText(String.valueOf(itm.getPrice()));
+           txtLocation.setText(itm.getLocation());
+           txtQuentity.setText(String.valueOf(itm.getQuantity()));
+           txtSuplier.setText(itm.getSuplier());
+           txtDate.setValue(itm.getDate());
+
+
+
 
     }
 
