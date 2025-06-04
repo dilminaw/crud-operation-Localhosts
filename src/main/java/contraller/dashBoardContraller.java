@@ -25,7 +25,23 @@ public class dashBoardContraller {
 
     @FXML
     void btnViewForm(ActionEvent event) {
+        Stage stage = new Stage();
+        try {
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("../view/addCoustomerForm.fxml"))));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        stage.show();
 
     }
 
+    public void BTNOrderFormOnAction(ActionEvent actionEvent) {
+        Stage stage = new Stage();
+        try {
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("../view/order_form.fxml"))));
+            stage.show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

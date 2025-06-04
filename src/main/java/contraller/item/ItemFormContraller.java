@@ -73,7 +73,7 @@ public class ItemFormContraller  implements Initializable {
 
 
 
-    itemService service= new itemContraller();
+    itemService service= itemContraller.getInstance();
     List<item> itemArrayList = new ArrayList<>();
 
     @FXML
@@ -166,37 +166,7 @@ dataReaload();
     }
 
     private void dataReaload(){
-        ObservableList<item> observableList= FXCollections.observableArrayList();
-//item itm = null;
-        try {
-            Connection connection = dbconnection.getInstance().getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("select * from items");
-
-        ResultSet resultSet =    preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-               item  itm =new item(
-                        resultSet.getString("ItemID"),
-                resultSet.getString("ItemName"),
-                resultSet.getString("Category"),
-                resultSet.getDouble("Price"),
-                resultSet.getInt("Quantity"),
-                resultSet.getString("Supplier"),
-                resultSet.getString("WarehouseLocation"),
-                        resultSet.getDate("AddedDate").toLocalDate()
-                );
-
-                System.out.println(itm);
-                observableList.add(itm);
-
-            }
-
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-itemTable.setItems(observableList);
+       itemTable.setItems(service.getAllItems());
 
     }
 

@@ -1,6 +1,8 @@
 package contraller.item;
 
 import dbConnection.dbconnection;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import model.item;
 import util.Crudutil;
 
@@ -8,8 +10,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class itemContraller implements itemService {
+
+  itemContraller(){}
+     private static itemContraller Instance;
+
+    public static itemContraller getInstance(){
+       return null==Instance?  Instance=new itemContraller():Instance;
+    }
+
     @Override
     public boolean addItem(item itm) {
         String sql = "insert into items values(?,?,?,?,?,?,?,?)";
@@ -40,35 +52,28 @@ public class itemContraller implements itemService {
 
     @Override
     public boolean deleteItem(String id) {
+        String sql="DELETE FROM items WHERE ItemID=?";
         try {
-            Connection connection = dbconnection.getInstance().getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM items WHERE ItemID='" + id + "'");
 
-            preparedStatement.executeUpdate();
+           return Crudutil.execute(sql,id);
+
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
-        return false;
+
     }
 
     @Override
     public boolean updateItem(item itm) {
         String Sql = "UPDATE items set ItemName=?,Category=?,Price=?,Quantity=?,Supplier=?,WarehouseLocation=?,AddedDate=? WHERE ItemID=?";
         try {
-            Connection connection = dbconnection.getInstance().getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(Sql);
+         return    Crudutil.execute(Sql,itm.getName(),itm.getCategory(),
+                    itm.getPrice(),itm.getQuantity(),itm.getSuplier(), itm.getLocation(),
+                    itm.getDate(),itm.getId());
 
-            preparedStatement.setObject(1, itm.getName());
-            preparedStatement.setObject(2, itm.getCategory());
-            preparedStatement.setObject(3, itm.getPrice());
-            preparedStatement.setObject(4, itm.getQuantity());
-            preparedStatement.setObject(5, itm.getSuplier());
-            preparedStatement.setObject(6, itm.getLocation());
-            preparedStatement.setObject(7, itm.getDate());
-            preparedStatement.setObject(8, itm.getId());
-            return preparedStatement.executeUpdate() > 0;
+
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -79,23 +84,22 @@ public class itemContraller implements itemService {
 
     @Override
     public item searchCoustomer(String id) {
-        String sql = "SELECT * FROM items WHERE ItemID='" + id + "'";
+        String sql = "SELECT * FROM items WHERE ItemID=?";
 
         try {
-            Connection connection = dbconnection.getInstance().getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            ResultSet resultSet = preparedStatement.executeQuery();
+
+            ResultSet resultSet = Crudutil.execute(sql,id);
 
 
-            if (resultSet.next()) {
-                return new item(resultSet.getString("ItemID"),
-                        resultSet.getString("ItemName"),
-                        resultSet.getString("Category"),
-                        resultSet.getDouble("Price"),
-                        resultSet.getInt("Quantity"),
-                        resultSet.getString("Supplier"),
-                        resultSet.getString("WarehouseLocation"),
-                        resultSet.getDate("AddedDate").toLocalDate());
+            while (resultSet.next()) {
+                return new item(resultSet.getString(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getDouble(4),
+                        resultSet.getInt(5),
+                        resultSet.getString(6),
+                        resultSet.getString(7),
+                        resultSet.getDate(8).toLocalDate());
             }
 
 
@@ -104,8 +108,42 @@ public class itemContraller implements itemService {
 
         }
 
+
         return null;
     }
+
+    public ObservableList<item> getAllItems(){
+        ObservableList<item> observableList = FXCollections.observableArrayList();
+        try {
+            ResultSet resultSet = Crudutil.execute("SELECT * FROM items");
+           while ( resultSet.next()){
+               observableList.add( new item(resultSet.getString(1),
+                       resultSet.getString(2),
+                       resultSet.getString(3),
+                       resultSet.getDouble(4),
+                       resultSet.getInt(5),
+                       resultSet.getString(6),
+                       resultSet.getString(7),
+                       resultSet.getDate(8).toLocalDate()
+               ));
+
+           }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return observableList;
+    }
+@Override
+    public List<String> getAllitemIds(){
+        ArrayList<String> itemIDS = new ArrayList<>();
+        ObservableList<item> allItems = getAllItems();
+        allItems.forEach(obj->{
+            itemIDS.add(obj.getId());
+
+        });
+        return itemIDS;
+    }
+
 }
 
 
