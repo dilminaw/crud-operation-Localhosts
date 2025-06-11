@@ -15,7 +15,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Duration;
+import model.cartTM;
 import model.coustomer;
 import model.item;
 
@@ -29,6 +31,7 @@ import java.util.ResourceBundle;
 public class orderFormContraller implements Initializable {
 
     public TextField TxtProducts;
+    public TextField UnitPrice;
     @FXML
     private ComboBox<String> CmbitemCode;
 
@@ -63,7 +66,7 @@ public class orderFormContraller implements Initializable {
     private Label lblOrderTime;
 
     @FXML
-    private TableView<?> tableOrder;
+    private TableView<cartTM> tableOrder;
 
     @FXML
     private TextField txtCustomerAddress;
@@ -94,6 +97,9 @@ public class orderFormContraller implements Initializable {
     private void searchItem(String t1) {
         item item = itemContraller.getInstance().searchCoustomer(t1);
         txtStock.setText(String.valueOf(item.getQuantity()));
+       // TxtProducts.setText(String.valueOf(item.));
+       // UnitPrice.setText(String.valueOf(item.getPrice()));
+        UnitPrice.setText(String.valueOf(item.getPrice()));
 
     }
 
@@ -107,7 +113,26 @@ public class orderFormContraller implements Initializable {
 
     @FXML
     void btnAddCardOnAction(ActionEvent event) {
+        colItemCode.setCellValueFactory(new PropertyValueFactory<>("itemCode"));
+        colDescription.setCellValueFactory(new PropertyValueFactory<>("Description"));
+        colUnitPrice.setCellValueFactory(new PropertyValueFactory<>("UnitPrice"));
+        colQty.setCellValueFactory(new PropertyValueFactory<>("qty"));
+        ColTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
 
+
+        ObservableList<cartTM> carts = FXCollections.observableArrayList();
+
+        String itemCode = CmbitemCode.getValue();
+        String itemDescription = txtDescription.getText();
+        Integer qty = Integer.valueOf(txtStock.getText());
+        Double unitPrice = Double.valueOf(UnitPrice.getText());
+        Integer numOfProduct=Integer.valueOf(TxtProducts.getText());
+        Double total= numOfProduct*unitPrice;
+
+
+
+carts.add( new cartTM(itemCode,itemDescription,qty,unitPrice,total,numOfProduct));
+tableOrder.setItems(carts);
     }
 
     @FXML
