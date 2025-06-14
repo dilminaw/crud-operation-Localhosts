@@ -4,6 +4,7 @@ import dbConnection.dbconnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.item;
+import model.orderDeatails;
 import util.Crudutil;
 
 import java.sql.Connection;
@@ -144,6 +145,27 @@ public class itemContraller implements itemService {
         return itemIDS;
     }
 
+    @Override
+    public boolean updateStock(List<orderDeatails> orderDeatails) {
+
+        for (orderDeatails orderDeatails1:orderDeatails){
+           boolean isupdate= updateStock(orderDeatails1);
+           if (!isupdate){
+               return false;
+           }
+        }
+return true;
+
+    }
+public boolean updateStock(orderDeatails orderDeatails){
+    String sql="update orderdetail set OrderQTY=OrderQTY-? where OrderID=?";
+    try {
+      return Crudutil.execute(sql,orderDeatails.getQty(),orderDeatails.getItemCode());
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
+    }
+
+}
 }
 
 

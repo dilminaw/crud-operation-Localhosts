@@ -2,6 +2,7 @@ package contraller.item;
 
 import javafx.collections.ObservableList;
 import model.item;
+import model.orderDeatails;
 
 import java.util.List;
 
@@ -19,4 +20,5 @@ public interface itemService {
 
     List<String> getAllitemIds();
 
+    boolean updateStock(List<orderDeatails> orderDeatails);
 }

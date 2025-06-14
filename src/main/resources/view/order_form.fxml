@@ -38,7 +38,7 @@
       <Button layoutX="510.0" layoutY="403.0" mnemonicParsing="false" onAction="#btnPlaceOrderOnAction" text="Place Order" />
       <Label layoutX="20.0" layoutY="407.0" text="Total Net:" />
       <Label fx:id="lblNetTotal" layoutX="81.0" layoutY="407.0" text="0000" />
-      <Label fx:id="lblOrderID" layoutX="100.0" layoutY="172.0" text="O001">
+      <Label fx:id="lblOrderID" layoutX="100.0" layoutY="172.0">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
@@ -76,5 +76,6 @@
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
+      <TextField fx:id="txtOrderId" layoutX="81.0" layoutY="170.0" prefHeight="26.0" prefWidth="82.0" />
    </children>
 </AnchorPane>

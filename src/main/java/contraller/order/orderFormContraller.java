@@ -10,20 +10,17 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Duration;
-import model.cartTM;
-import model.coustomer;
-import model.item;
+import model.*;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -32,6 +29,7 @@ public class orderFormContraller implements Initializable {
 
     public TextField TxtProducts;
     public TextField UnitPrice;
+    public TextField txtOrderId;
     @FXML
     private ComboBox<String> CmbitemCode;
 
@@ -79,6 +77,7 @@ public class orderFormContraller implements Initializable {
 
     @FXML
     private TextField txtStock;
+    ObservableList<cartTM> carts = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -97,6 +96,7 @@ public class orderFormContraller implements Initializable {
     private void searchItem(String t1) {
         item item = itemContraller.getInstance().searchCoustomer(t1);
         txtStock.setText(String.valueOf(item.getQuantity()));
+
        // TxtProducts.setText(String.valueOf(item.));
        // UnitPrice.setText(String.valueOf(item.getPrice()));
         UnitPrice.setText(String.valueOf(item.getPrice()));
@@ -116,11 +116,11 @@ public class orderFormContraller implements Initializable {
         colItemCode.setCellValueFactory(new PropertyValueFactory<>("itemCode"));
         colDescription.setCellValueFactory(new PropertyValueFactory<>("Description"));
         colUnitPrice.setCellValueFactory(new PropertyValueFactory<>("UnitPrice"));
-        colQty.setCellValueFactory(new PropertyValueFactory<>("qty"));
+        colQty.setCellValueFactory(new PropertyValueFactory<>("numberOfProducts"));
         ColTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
 
 
-        ObservableList<cartTM> carts = FXCollections.observableArrayList();
+
 
         String itemCode = CmbitemCode.getValue();
         String itemDescription = txtDescription.getText();
@@ -129,14 +129,41 @@ public class orderFormContraller implements Initializable {
         Integer numOfProduct=Integer.valueOf(TxtProducts.getText());
         Double total= numOfProduct*unitPrice;
 
+        Integer itemStock=Integer.parseInt(txtStock.getText());
+        if (itemStock<numOfProduct){
+            new Alert(Alert.AlertType.CONFIRMATION,"Can't set").show();
+        }
+        else {
+            carts.add( new cartTM(itemCode,itemDescription,qty,unitPrice,total,numOfProduct));
+            tableOrder.setItems(carts);
+
+        }
 
 
-carts.add( new cartTM(itemCode,itemDescription,qty,unitPrice,total,numOfProduct));
-tableOrder.setItems(carts);
+calculateTotal();
+
+
     }
 
     @FXML
-    void btnPlaceOrderOnAction(ActionEvent event) {
+    void btnPlaceOrderOnAction(ActionEvent event) throws SQLException {
+        String orderIdText = txtOrderId.getText();
+        LocalDate orderDateText =LocalDate.parse( lblOrderDate.getText());
+        Integer CusIdText = cmbCustomerID.getValue();
+        ArrayList<orderDeatails> orderDeatails = new ArrayList<>();
+        carts.forEach(obj->{
+            orderDeatails.add(new orderDeatails(
+                   txtOrderId.getText(),
+                    obj.getItemCode(),
+                    obj.getQty(),0.0
+
+
+            ));
+        });
+
+
+        order orders =new order(orderIdText,orderDateText,CusIdText,orderDeatails);
+        new orderContraller().placeOrder(orders);
 
     }
 
@@ -174,6 +201,14 @@ tableOrder.setItems(carts);
         CmbitemCode.setItems( stringObservableList);
 
 
+    }
+    Double total=0.0;
+
+    private void calculateTotal(){
+        carts.forEach(obj->{
+          total+= obj.getTotal();
+        });
+lblNetTotal.setText(String.valueOf(total));
     }
 
 }
